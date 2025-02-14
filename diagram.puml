@@ -1,0 +1,110 @@
+@startuml
+
+class Player {
+  - name: String
+  - board: Board
+  - abilityTrack: AbilityTrack
+
+  + rollDice(dice: Dice)
+  + chooseTile(tile: Tile)
+  + useAbility(ability: Ability)
+  + placeTile(tile: Tile)
+  + markAbilityTrack(dice: Dice)
+  + calculateScore(): int
+}
+
+class Board {
+  - tiles: List<Tile>
+  - grid: int[][]
+
+  + canPlaceTile(tile: Tile, position: Position): boolean
+  + placeTile(tile: Tile, position: Position)
+  + calculateScore(): int
+}
+
+class Dice {
+  - dice: List<Die>
+
+  + rollAll()
+  + getRolledDice(): List<Die>
+  + getDie(index: int): Die
+}
+
+class Die {
+  - color: String
+  - value: int
+
+  + roll()
+  + getValue(): int
+  + getColor(): String
+}
+
+class Tile {
+  - size: int
+  - color: String
+  - shapes: List<Shape>
+
+  + getSize(): int
+  + getColor(): String
+  + canPlaceOnBoard(board: Board, position: Position): boolean
+  + drawWindows()
+}
+
+class Position {
+  - row: int
+  - column: int
+
+  + getRow(): int
+  + getColumn(): int
+}
+
+class Shape {
+  - shapeType: String
+  - shapePositions: Position[]
+
+  + fitsInPosition(position: Position, board: Board): boolean
+}
+
+class AbilityTrack {
+  - trackProgress: Map<String, Integer>
+
+  + markTrack(color: String)
+  + unlockAbility(color: String): boolean
+  + getAbility(color: String): Ability
+}
+
+class Ability {
+  - color: String
+  - description: String
+  - used: boolean
+
+  + useAbility()
+  + isUsed(): boolean
+  + getColor(): String
+}
+
+class Game {
+  - players: List<Player>
+  - dice: Dice
+  - availableTiles: Tile[]
+  - maxScore: int
+
+  + start()
+  + nextTurn()
+  + endGame()
+  + getWinner(): Player
+}
+
+Player "1" *-- "1" Board
+Player "1" *-- "1" AbilityTrack
+Player "1" o-- "Dice"
+Player "1" o-- "Tile"
+Board "1" o-- "0..*" Tile
+Tile "1" o-- "0..*" Shape
+Dice "1" *-- "1..*" Die
+AbilityTrack "1" o-- "0..*" Ability
+Game "1" *-- "0..*" Player
+Game "1" o-- "1" Dice
+Game "1" o-- "0..*" Tile
+
+@enduml
